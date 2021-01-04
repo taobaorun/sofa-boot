@@ -16,16 +16,12 @@
  */
 package com.alipay.sofa.runtime.service.component;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-
 import com.alipay.sofa.runtime.api.ServiceRuntimeException;
 import com.alipay.sofa.runtime.api.component.Property;
 import com.alipay.sofa.runtime.log.SofaLogger;
 import com.alipay.sofa.runtime.model.ComponentType;
+import com.alipay.sofa.runtime.service.binding.JvmBinding;
+import com.alipay.sofa.runtime.service.helper.BindingHelper;
 import com.alipay.sofa.runtime.spi.binding.Binding;
 import com.alipay.sofa.runtime.spi.binding.BindingAdapter;
 import com.alipay.sofa.runtime.spi.binding.BindingAdapterFactory;
@@ -34,6 +30,12 @@ import com.alipay.sofa.runtime.spi.component.Implementation;
 import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
 import com.alipay.sofa.runtime.spi.health.HealthResult;
 import com.alipay.sofa.runtime.spi.util.ComponentNameFactory;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Service Component
@@ -88,6 +90,11 @@ public class ServiceComponent extends AbstractComponent {
         if (service.hasBinding()) {
             Set<Binding> bindings = service.getBindings();
             boolean allPassed = true;
+            //TODO hook
+            //multi process
+            if (service.getBinding(JvmBinding.JVM_BINDING_TYPE) != null) {
+                BindingHelper.addBoltBinding(service, sofaRuntimeContext);
+            }
             for (Binding binding : bindings) {
                 BindingAdapter<Binding> bindingAdapter = this.bindingAdapterFactory
                     .getBindingAdapter(binding.getBindingType());
@@ -137,6 +144,7 @@ public class ServiceComponent extends AbstractComponent {
         }
 
         if (service.hasBinding()) {
+
             boolean allPassed = true;
             Set<Binding> bindings = service.getBindings();
             for (Binding binding : bindings) {

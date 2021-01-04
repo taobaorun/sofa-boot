@@ -16,8 +16,6 @@
  */
 package com.alipay.sofa.runtime.service.helper;
 
-import java.util.Collection;
-
 import com.alipay.sofa.runtime.SofaRuntimeProperties;
 import com.alipay.sofa.runtime.service.binding.JvmBinding;
 import com.alipay.sofa.runtime.service.component.Reference;
@@ -28,6 +26,8 @@ import com.alipay.sofa.runtime.spi.component.ComponentInfo;
 import com.alipay.sofa.runtime.spi.component.ComponentManager;
 import com.alipay.sofa.runtime.spi.component.DefaultImplementation;
 import com.alipay.sofa.runtime.spi.component.SofaRuntimeContext;
+
+import java.util.Collection;
 
 /**
  * reference register helper
@@ -46,6 +46,10 @@ public class ReferenceRegisterHelper {
             // as rpc invocation would be serialized, so here would Not ignore serialized
             reference.addBinding(new JvmBinding());
         }
+
+        //TODO 需要移植到 hook
+        //multi process
+        BindingHelper.addBoltBinding(reference, sofaRuntimeContext);
 
         ComponentManager componentManager = sofaRuntimeContext.getComponentManager();
         ReferenceComponent referenceComponent = new ReferenceComponent(reference,
@@ -76,4 +80,5 @@ public class ReferenceRegisterHelper {
 
         return result;
     }
+
 }
