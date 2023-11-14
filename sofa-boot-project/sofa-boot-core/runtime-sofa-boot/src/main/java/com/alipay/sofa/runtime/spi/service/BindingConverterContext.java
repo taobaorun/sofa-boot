@@ -19,7 +19,7 @@ package com.alipay.sofa.runtime.spi.service;
 import org.springframework.context.ApplicationContext;
 
 /**
- * context information for binding convert
+ * Context information for binding convert.
  *
  * @author xuanbei 18/2/28
  */
@@ -38,6 +38,8 @@ public class BindingConverterContext {
     private String             loadBalance;
 
     private String             repeatReferLimit;
+
+    private Class              interfaceType;
 
     public ClassLoader getAppClassLoader() {
         return appClassLoader;
@@ -93,5 +95,13 @@ public class BindingConverterContext {
 
     public void setRepeatReferLimit(String repeatReferLimit) {
         this.repeatReferLimit = repeatReferLimit;
+    }
+
+    public Class getInterfaceType() {
+        return interfaceType;
+    }
+
+    public void setInterfaceType(Class interfaceType) {
+        this.interfaceType = interfaceType;
     }
 }

@@ -25,6 +25,8 @@ import org.w3c.dom.Element;
 import com.alipay.sofa.runtime.spring.factory.ReferenceFactoryBean;
 
 /**
+ * Reference definition parser.
+ *
  * @author xuanbei 18/3/1
  */
 public class ReferenceDefinitionParser extends AbstractContractDefinitionParser {
@@ -67,14 +69,8 @@ public class ReferenceDefinitionParser extends AbstractContractDefinitionParser 
         }
 
         String interfaceType = element.getAttribute(INTERFACE_ELEMENT);
-        Class<?> interfaceClass;
-        try {
-            interfaceClass = this.getClass().getClassLoader().loadClass(interfaceType);
-        } catch (Throwable t) {
-            throw new IllegalArgumentException("Failed to load class for interface: "
-                                               + interfaceType, t);
-        }
-        builder.getBeanDefinition().setAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE, interfaceClass);
+        builder.getBeanDefinition().setAttribute(FactoryBean.OBJECT_TYPE_ATTRIBUTE,
+            getInterfaceClass(interfaceType));
     }
 
     @Override
@@ -85,5 +81,14 @@ public class ReferenceDefinitionParser extends AbstractContractDefinitionParser 
     @Override
     public String supportTagName() {
         return "reference";
+    }
+
+    protected Class getInterfaceClass(String interfaceType) {
+        try {
+            return Thread.currentThread().getContextClassLoader().loadClass(interfaceType);
+        } catch (Throwable t) {
+            throw new IllegalArgumentException("Failed to load class for interface: "
+                                               + interfaceType, t);
+        }
     }
 }
